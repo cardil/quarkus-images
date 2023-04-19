@@ -33,7 +33,7 @@
                 <configuration>
                     <args>
                         <argument>--dockerfile-dir=${project.basedir}/target/docker</argument>
-                        <argument>--ubi-minimal=${ubi-min.base}</argument>
+                        <argument>--ubi-minimal=${ubi8-min.base}</argument>
                         <argument>--out=quay.io/quarkus/ubi-quarkus-mandrel-builder-image</argument>
                         <argument>--in=${images.file}</argument>
                         <argument>--dry-run=${jdock.dry-run}</argument>

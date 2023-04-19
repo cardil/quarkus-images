@@ -33,10 +33,17 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
+        <!-- The default UBI will not get appended to the image tag -->
+        <ubi.default>8</ubi.default>
         <!-- See https://catalog.redhat.com/software/containers/ubi8/ubi-minimal/5c359a62bed8bd75a2c3fba8 -->
-        <ubi-min.base>registry.access.redhat.com/ubi8/ubi-minimal:8.7</ubi-min.base>
+        <ubi8-min.base>registry.access.redhat.com/ubi8/ubi-minimal:8.7</ubi8-min.base>
         <!-- See https://catalog.redhat.com/software/containers/ubi8/ubi-micro/5ff3f50a831939b08d1b832a -->
-        <ubi-micro.base>registry.access.redhat.com/ubi8-micro:8.7</ubi-micro.base>
+        <ubi8-micro.base>registry.access.redhat.com/ubi8-micro:8.7</ubi8-micro.base>
+
+        <!-- See https://catalog.redhat.com/software/containers/ubi9/ubi-minimal/615bd9b4075b022acc111bf5 -->
+        <ubi9-min.base>registry.access.redhat.com/ubi9/ubi-minimal:9.1</ubi9-min.base>
+        <!-- See https://catalog.redhat.com/software/containers/ubi9/ubi-micro/615bdf943f6014fa45ae1b58 -->
+        <ubi9-micro.base>registry.access.redhat.com/ubi9/ubi-minimal:9.1</ubi9-micro.base>
 
         <jdock.dry-run>false</jdock.dry-run>
     </properties>

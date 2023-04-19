@@ -2,6 +2,7 @@ images:
   - graalvm-version: 22.2.0
     java-version: 11
     tag: 22.2-java11
+    ubi-release: 8
     variants:
       - sha: 882363c75d1b1782a48bbf7dd8b155ab231b0957fd5885941376d90b69f21b9e
         arch: amd64

@@ -10,6 +10,7 @@ package io.quarkus.images;
 
 import io.quarkus.images.config.Config;
 import io.quarkus.images.config.Tag;
+import io.quarkus.images.config.Ubi;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -30,8 +31,13 @@ public class Push implements Callable<Integer> {
             "--dockerfile-dir" }, description = "The location where the docker file should be created", defaultValue = "target/docker")
     private File dockerFileDir;
 
-    @CommandLine.Option(names = { "--ubi-minimal" }, description = "The UBI Minimal base image")
-    private String base;
+    @CommandLine.Option(names = { "--ubi-default" }, description = "The default release of UBI to use")
+    private int baseRelease;
+    @CommandLine.Option(names = { "--ubi8-minimal" }, description = "The UBI 8 Minimal base image")
+    private String base8;
+
+    @CommandLine.Option(names = { "--ubi9-minimal" }, description = "The UBI 9 Minimal base image")
+    private String base9;
 
     @CommandLine.Option(names = "--dry-run", description = "Just generate the docker file and skip the container build")
     private boolean dryRun;
@@ -39,7 +45,9 @@ public class Push implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         JDock.setDockerFileDir(dockerFileDir);
-        Config config = Config.read(output, in);
+        Ubi ubi = new Ubi(baseRelease, base8, base9);
+        Config config = Config.read(output, in, ubi);
+
         for (Config.ImageConfig image : config.images) {
             if (image.isMultiArch()) {
                 System.out
@@ -50,7 +58,7 @@ public class Push implements Callable<Integer> {
                         .println("\uD83D\uDD25\tBuilding single-arch image " + image.fullname(config));
             }
             String groupImageName = image.fullname(config);
-            Map<String, Buildable> architectures = QuarkusGraalVMBuilder.collect(image, base);
+            Map<String, Buildable> architectures = QuarkusGraalVMBuilder.collect(image, ubi);
             if (architectures.size() == 1) {
                 // Single-Arch
                 System.out.println("\uD83D\uDD25\tBuilding single-architecture image " + groupImageName);

@@ -14,13 +14,15 @@ public class Config {
 
     // Computed:
     public String image;
+    public Ubi ubi;
     public List<ImageConfig> images;
 
-    public static Config read(String image, File in) throws IOException {
+    public static Config read(String image, File in, Ubi ubi) throws IOException {
         // Read the graalvm.yaml file
         YAMLMapper mapper = new YAMLMapper();
         Config config = mapper.readerFor(Config.class).readValue(in);
         config.image = image;
+        config.ubi = ubi;
         return config;
     }
 
@@ -30,14 +32,13 @@ public class Config {
         @JsonProperty("java-version")
         public int javaVersion;
 
+        @JsonProperty("ubi-release")
+        public int ubiRelease;
+
         // Optional, can be null
         public String tag;
 
         public List<Variant> variants;
-
-        public String version() {
-            return graalvmVersion + "-java" + javaVersion;
-        }
 
         public String graalvmVersion() {
             return graalvmVersion;
@@ -49,13 +50,21 @@ public class Config {
 
         public String fullname(Config config, Variant variant) {
             if (variant.arch() != null) {
-                return config.image + ":" + graalvmVersion + "-java" + javaVersion + "-" + variant.arch();
+                return maybeAppendUbiRelease(config,
+                    config.image + ":" + graalvmVersion +
+                    "-java" + javaVersion + "-" + variant.arch()
+                );
             }
-            return config.image + ":" + graalvmVersion + "-java" + javaVersion;
+            return maybeAppendUbiRelease(config,
+                config.image + ":" + graalvmVersion +
+                "-java" + javaVersion
+            );
         }
 
         public String fullname(Config config) {
-            return config.image + ":" + graalvmVersion + "-java" + javaVersion;
+            return maybeAppendUbiRelease(config,
+                config.image + ":" + graalvmVersion + "-java" + javaVersion
+            );
         }
 
         public Map<String, String> getArchToImage(Config config) {
@@ -72,6 +81,14 @@ public class Config {
 
         public int javaVersion() {
             return javaVersion;
+        }
+
+        private String maybeAppendUbiRelease(Config config, String fullname) {
+            Ubi.Release rel = Ubi.Release.from(ubiRelease);
+            if (rel != config.ubi.defaultRelease) {
+                return fullname + "-ubi" + ubiRelease;
+            }
+            return fullname;
         }
     }
 }
